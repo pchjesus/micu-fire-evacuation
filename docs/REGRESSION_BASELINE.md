@@ -1,8 +1,21 @@
 # v0.7.3 회귀검수 기준선
 
-문서 버전: 1.0
+문서 버전: 1.1
 기준 버전: v0.7.3 RC
 목적: 이후 버전에서 기존에 검증된 정상 동작과 핵심 데이터 보존 조건이 유지되는지 판단하기 위한 기준선
+
+## v0.7.4 추가 기준 (2026-10-09)
+
+아래 v0.7.3 계약에 다음 경계를 추가한다. 현재 결과는 `../TEST_REPORT.md` 기준이며 과거 실제 기기 결과를 새 결과에 합산하지 않는다.
+
+| 보호 계약 | 자동 근거 | 브라우저 근거 |
+| --- | --- | --- |
+| 교체·삭제 확인 중 타 탭 변경 중단·보존 | state-integration 경합 3개+정상 1개 | UI의 확인 전 원본·revision 전달은 코드 검토; 경합 재현은 fake-indexeddb |
+| 복원 후 앱 새로고침은 epoch 갱신·저장 재개 | flows initialize→read 순서 | restore→다른 탭 refresh→edit→save |
+| ID·선임·override·월·날짜·듀티·이력·백업 연속 일관성 | state-integration 연속 저장/새 인스턴스/새 DB | 복수 월, 인원/배치, 실패/충돌, 복원 |
+| 데이터·초안 분리와 이탈 취소·저장 실패 입력 유지 | 기존 저장/모델/Audit | discard, injected write failure, losing-tab draft |
+
+자동 68개·브라우저 26개 통과는 Linux Chromium과 메모리 IndexedDB 범위다. 실제 휴대폰/iOS/Windows/공식 자료/A4는 미확인 상태를 유지한다.
 
 ---
 

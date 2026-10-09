@@ -1,5 +1,5 @@
 /* IndexedDB is authoritative. Legacy mirrors are imported once only. */
-const APP_VERSION = '0.7.3';
+const APP_VERSION = '0.7.4';
 const AppStorage = (() => {
   const DB_NAME = 'fireEvacuationRosterDB_v0617';
   const STORES = ['rosters', 'overrides', 'personnel', 'meta'];
@@ -153,19 +153,27 @@ const AppStorage = (() => {
     await transaction(['meta'], 'readwrite', tx => tx.objectStore('meta').put(value));
     verify(await read('meta', value.id), value);
   }
-  async function saveRoster(record, replace = false) {
+  async function saveRoster(record, replace = false, expectedCurrent = null) {
     const safe = JSON.parse(JSON.stringify({...record, sourceBlob:undefined}));
     await transaction(STORES, 'readwrite', (tx, done, fail) => {
       const existing = tx.objectStore('rosters').get(safe.id);
       existing.onsuccess = () => {
         if (existing.result && !replace) { fail(new Error('같은 월의 근무표가 다른 탭에서 저장됐어. 보관함을 다시 열어줘.')); return; }
-        tx.objectStore('rosters').put(safe);
-        if (replace) {
-          clearScope(tx, 'overrides', safe.id);
-          tx.objectStore('personnel').delete(safe.id);
-          const revision = tx.objectStore('meta').get(`revision:${safe.id}`);
-          revision.onsuccess = () => tx.objectStore('meta').put({id:`revision:${safe.id}`, value:(revision.result?.value || 0) + 1});
+        if (expectedCurrent && JSON.stringify(canonical(existing.result)) !== JSON.stringify(canonical(expectedCurrent.record))) {
+          fail(new Error('다른 탭에서 근무표가 교체·삭제됐어. 보관함을 다시 열어 확인해줘.')); return;
         }
+        if (replace) {
+          const revision = tx.objectStore('meta').get(`revision:${safe.id}`);
+          revision.onsuccess = () => {
+            if (expectedCurrent && (revision.result?.value || 0) !== expectedCurrent.revision) {
+              fail(new Error('다른 탭에서 인원·배치가 변경됐어. 교체를 중단했어. 최신 자료를 확인해줘.')); return;
+            }
+            tx.objectStore('rosters').put(safe);
+            clearScope(tx, 'overrides', safe.id);
+            tx.objectStore('personnel').delete(safe.id);
+            tx.objectStore('meta').put({id:`revision:${safe.id}`, value:(revision.result?.value || 0) + 1});
+          };
+        } else tx.objectStore('rosters').put(safe);
       };
     });
     verify(await read('rosters', safe.id), safe);
@@ -176,15 +184,26 @@ const AppStorage = (() => {
     }
     return safe;
   }
-  async function deleteRoster(id) {
-    await transaction(STORES, 'readwrite', tx => {
-      tx.objectStore('rosters').delete(id);
-      clearScope(tx, 'overrides', id);
-      tx.objectStore('personnel').delete(id);
-      const revision = tx.objectStore('meta').get(`revision:${id}`);
-      revision.onsuccess = () => tx.objectStore('meta').put({id:`revision:${id}`, value:(revision.result?.value || 0) + 1});
-      const active = tx.objectStore('meta').get('activeRosterId');
-      active.onsuccess = () => { if (active.result?.value === id) tx.objectStore('meta').put({id:'activeRosterId',value:null}); };
+  async function deleteRoster(id, expectedCurrent = null) {
+    await transaction(STORES, 'readwrite', (tx, done, fail) => {
+      const existing = tx.objectStore('rosters').get(id);
+      existing.onsuccess = () => {
+        if (expectedCurrent && JSON.stringify(canonical(existing.result)) !== JSON.stringify(canonical(expectedCurrent.record))) {
+          fail(new Error('다른 탭에서 근무표가 교체·삭제됐어. 삭제를 중단했어.')); return;
+        }
+        const revision = tx.objectStore('meta').get(`revision:${id}`);
+        revision.onsuccess = () => {
+          if (expectedCurrent && (revision.result?.value || 0) !== expectedCurrent.revision) {
+            fail(new Error('다른 탭에서 인원·배치가 변경됐어. 삭제를 중단했어.')); return;
+          }
+          tx.objectStore('rosters').delete(id);
+          clearScope(tx, 'overrides', id);
+          tx.objectStore('personnel').delete(id);
+          tx.objectStore('meta').put({id:`revision:${id}`, value:(revision.result?.value || 0) + 1});
+          const active = tx.objectStore('meta').get('activeRosterId');
+          active.onsuccess = () => { if (active.result?.value === id) tx.objectStore('meta').put({id:'activeRosterId',value:null}); };
+        };
+      };
     });
     verify(await read('rosters', id), null);
     const state = await readState(id);
@@ -319,3 +338,4 @@ const AppStorage = (() => {
     getActiveId:async () => (await read('meta','activeRosterId'))?.value || null,
     listRosters:() => read('rosters'), getRoster:id => read('rosters',id)};
 })();
+

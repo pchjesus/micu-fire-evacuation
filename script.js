@@ -368,11 +368,11 @@ async function saveRosterRecord(record){
 async function getRosterRecords(){
   return (await AppStorage.listRosters()).sort((a,b)=>a.year-b.year||a.month-b.month);
 }
-async function deleteRosterRecord(id){
+async function deleteRosterRecord(id,expectedCurrent){
   const record=rosterRecords.find(row=>row.id===id);
   return Audit.perform(auditContext(record,'근무표 삭제','근무표 전체'),[
     {action:'roster_deleted',before:record?.fileName || id,after:'삭제',detail:'근무표와 관련 수정사항·추가 인원 삭제. 수정 이력은 유지.'}
-  ],()=>AppStorage.deleteRoster(id));
+  ],()=>AppStorage.deleteRoster(id,expectedCurrent));
 }
 
 function getRosterIdForRoster(rosterRef){
@@ -453,10 +453,11 @@ async function renderRosterLibrary(){
     };
     item.querySelector('.delete').onclick=async()=>{
       if(!maybeLeaveEdit('근무표를 삭제')) return;
-      if(!confirm(`${record.year}년 ${record.month}월 근무표와 관련 수정사항·추가 인원을 삭제할까?`)) return;
       await runSavedAction(async()=>{
+        const expectedCurrent={record,revision:(await AppStorage.readState(record.id)).revision};
+        if(!confirm(`${record.year}년 ${record.month}월 근무표와 관련 수정사항·추가 인원을 삭제할까?`)) return false;
         const wasActive=getActiveRosterId()===record.id;
-        await deleteRosterRecord(record.id);
+        await deleteRosterRecord(record.id,expectedCurrent);
         rosterRecords=rosterRecords.filter(r=>r.id!==record.id);
         if(wasActive){
           activeRosterId=null;
@@ -527,10 +528,11 @@ async function persistImportedRoster(parsed,year,month,fileName){
     importInspection:parsed.inspection
   };
   const existing=await AppStorage.getRoster(record.id);
+  const expectedCurrent=existing?{record:existing,revision:(await AppStorage.readState(record.id)).revision}:null;
   if(existing && !confirm(`${year}년 ${month}월 근무표를 교체할까? 이 근무표의 수동 수정사항과 추가·제외 인원도 초기화돼.`)) return false;
   const events=[{action:existing?'roster_replaced':'roster_registered',before:existing?.fileName || '',after:fileName,detail:`${year}년 ${month}월 · ${parsed.all.length}명 · 날짜 열 ${Object.keys(parsed.shifts).length}개`}];
   if(existing) events.push({action:'data_reset',target:'근무표 관련 수정사항',before:'이전 배치 수정·추가/제외 인원·프로필',after:'초기화',detail:'같은 월 근무표 교체에 따른 초기화. 수정 이력은 유지.'});
-  await Audit.perform(auditContext(record,'근무표 저장','근무표 전체'),events,()=>AppStorage.saveRoster(record,Boolean(existing)));
+  await Audit.perform(auditContext(record,'근무표 저장','근무표 전체'),events,()=>AppStorage.saveRoster(record,Boolean(existing),expectedCurrent));
   const idx=rosterRecords.findIndex(r=>r.year===year&&r.month===month);
   if(idx>=0) rosterRecords[idx]=record; else rosterRecords.push(record);
 
@@ -584,6 +586,8 @@ async function init(){
 }
 
 async function refreshToNow(){
+  // Explicit refresh accepts the latest full-restore epoch before future writes.
+  await AppStorage.initialize();
   const records=await getRosterRecords();
   const id=await AppStorage.getActiveId();
   const active=records.find(row=>row.id===id);
@@ -859,3 +863,4 @@ $('applyMonthYear').onclick=saveReviewedImport;
 renderCurrentClock();
 setInterval(renderCurrentClock,1000);
 init();
+

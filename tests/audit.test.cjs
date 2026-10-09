@@ -38,13 +38,13 @@ test('roster replacement and deletion preserve independent history and a new ins
   await a.logEvent({action:'roster_registered',target:'virtual.xlsx'});
   await s.saveRoster({...roster,fileName:'replacement.xlsx'},true);await s.deleteRoster(roster.id);
   const restored=setup(db);await restored.s.initialize();const rows=await restored.s.listLogs();
-  assert.equal(rows.length,1);assert.equal(rows[0].appVersion,'0.7.3');assert.equal(rows[0].target,'virtual.xlsx');
+  assert.equal(rows.length,1);assert.equal(rows[0].appVersion,'0.7.4');assert.equal(rows[0].target,'virtual.xlsx');
 });
 test('successful operation logs changes and verified save in one correlated batch with coarse environment',async()=>{
   const {s,a}=setup();let saved=false;
   const result=await a.perform({operation:'이름 저장',rosterId:roster.id},[{action:'name_changed',before:'가',after:'나'}],async()=>{saved=true;return 42;});
   assert.equal(result,42);assert.equal(saved,true);const rows=await s.listLogs();assert.equal(rows.length,2);
-  assert.equal(rows[0].operationId,rows[1].operationId);assert.equal(rows[0].appVersion,'0.7.3');
+  assert.equal(rows[0].operationId,rows[1].operationId);assert.equal(rows[0].appVersion,'0.7.4');
   assert.deepEqual(Object.keys(rows[0].environment).sort(),['browser','device','os']);assert.equal(rows[0].environment.os,'Android');
   assert.ok(rows.every(row=>!('userAgent'in row)&&!('deviceId'in row)));
 });
@@ -131,3 +131,4 @@ test('v0.7.2 database upgrades from schema 3 and preserves its independent logs'
   assert.equal((await s.openDB()).version,4);assert.equal(await s.getActiveId(),roster.id);
   assert.deepEqual(plain(await s.listLogs()),[event]);assert.equal((await s.readState(roster.id)).revision,7);
 });
+

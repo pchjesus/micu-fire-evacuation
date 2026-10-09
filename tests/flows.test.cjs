@@ -8,7 +8,7 @@ const empty=id=>({id,profiles:{},contexts:{}});
 function app(storage={}){
   const nodes={};
   const node=id=>nodes[id]||=( {value:'',textContent:'',hidden:false,classList:{contains:()=>true,add(){},remove(){},toggle(){}},focus(){}} );
-  const ctx=vm.createContext({Date,console,XLSX,Blob,structuredClone,APP_VERSION:'0.7.1',document:{getElementById:node},AppStorage:{emptyPersonnel:empty,...storage}});
+  const ctx=vm.createContext({Date,console,XLSX,Blob,structuredClone,APP_VERSION:'0.7.4',document:{getElementById:node},AppStorage:{initialize:async()=>{},emptyPersonnel:empty,...storage}});
   loadDomain(ctx);
   vm.runInContext(fs.readFileSync('script.js','utf8').split('/* UI bindings */')[0],ctx);
   vm.runInContext('render=()=>{}; showToast=()=>{}; renderRosterLibrary=async()=>{};',ctx);
@@ -43,6 +43,11 @@ test('failed refresh leaves previously loaded source, assignments and revision i
   a.run(`rosterRecords=[${JSON.stringify(roster(4))}];manualAssignments={old:'retained'};stateRevision=3;`);
   await assert.rejects(a.run('refreshToNow()'),/read failure/);
   assert.equal(a.run('rosterRecords[0].all.length'),4);assert.equal(a.run('manualAssignments.old'),'retained');assert.equal(a.run('stateRevision'),3);
+});
+test('toolbar refresh establishes the current restore epoch before reading state',async()=>{
+ const order=[],current=roster(5);
+ const a=app({initialize:async()=>order.push('epoch'),listRosters:async()=>{order.push('rosters');return [current]},getActiveId:async()=>current.id,readState:async()=>({assignments:{},personnel:empty(current.id),revision:9})});
+ await a.run('refreshToNow()');assert.deepEqual(order,['epoch','rosters']);assert.equal(a.run('stateRevision'),9);
 });
 test('failed activation read does not persist or apply a different active roster',async()=>{
   let activeWrites=0;

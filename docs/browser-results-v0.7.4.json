@@ -1,0 +1,109 @@
+{
+  "results": [
+    {
+      "name": "Excel review, previous-day exclusion, Save / Use separation",
+      "status": "pass"
+    },
+    {
+      "name": "Senior-order role allocation",
+      "status": "pass"
+    },
+    {
+      "name": "Multiple-month Save / Use / date transitions preserve active roster and isolation",
+      "status": "pass"
+    },
+    {
+      "name": "Role reset preserves another role override",
+      "status": "pass"
+    },
+    {
+      "name": "NC=N, date / duty isolation, reload restoration",
+      "status": "pass"
+    },
+    {
+      "name": "Rename and rank change move override by stable ID; added doctor joins evacuation",
+      "status": "pass"
+    },
+    {
+      "name": "Added-person delete and source exclude / restore remain context scoped",
+      "status": "pass"
+    },
+    {
+      "name": "Unsaved edit discard keeps committed state",
+      "status": "pass"
+    },
+    {
+      "name": "Write failure retains editable draft and explicit retry works",
+      "status": "pass"
+    },
+    {
+      "name": "Two-tab revision conflict preserves winner and losing draft",
+      "status": "pass"
+    },
+    {
+      "name": "Explicit refresh after discard reloads latest state",
+      "status": "pass"
+    },
+    {
+      "name": "Validated full backup includes version, personnel and assignments",
+      "status": "pass"
+    },
+    {
+      "name": "Damaged backup is rejected without data change",
+      "status": "pass"
+    },
+    {
+      "name": "Fresh profile full restore and reload preserve name, rank and overrides",
+      "status": "pass"
+    },
+    {
+      "name": "Other-tab full restore followed by toolbar refresh permits new saves",
+      "status": "pass"
+    },
+    {
+      "name": "Desktop profile edit, save, reload and keyboard dialog dismissal",
+      "status": "pass"
+    },
+    {
+      "name": "History remains available and exports all events",
+      "status": "pass"
+    },
+    {
+      "name": "Calendar month navigation and adjacent-month selection",
+      "status": "pass"
+    },
+    {
+      "name": "Responsive 320px: no horizontal overflow",
+      "status": "pass"
+    },
+    {
+      "name": "Responsive 390px: no horizontal overflow",
+      "status": "pass"
+    },
+    {
+      "name": "Responsive 768px: no horizontal overflow",
+      "status": "pass"
+    },
+    {
+      "name": "Responsive 1280px: no horizontal overflow",
+      "status": "pass"
+    },
+    {
+      "name": "Help dialog remains scrollable and closable on mobile viewport",
+      "status": "pass"
+    },
+    {
+      "name": "Print retains all three role panels",
+      "status": "pass"
+    },
+    {
+      "name": "Browser process restart retains IndexedDB in persistent profile",
+      "status": "pass"
+    },
+    {
+      "name": "No unhandled page errors across integrated flows",
+      "status": "pass"
+    }
+  ],
+  "errors": []
+}
