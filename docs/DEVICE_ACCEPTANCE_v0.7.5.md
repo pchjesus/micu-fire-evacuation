@@ -1,7 +1,7 @@
 # v0.7.5 배포·실기기 인수검사 실행표 (준비본)
 
 - 기준: 2026-10-09, GitHub `main` `9930534cdbc4f6632d0aeeecac14ae22b85ad317` (v0.7.4 RC 및 공식 로드맵).
-- **현재 상태: 준비만 완료. 실제 기기·배포·자동검사는 이번 작업에서 실행하지 않았다. v0.7.5 출시 또는 FINAL을 의미하지 않는다.**
+- **현재 상태: v0.7.5 자동 회귀검사는 GitHub Actions에서 확인 완료, 실제 기기·Sites 배포 비교는 미검증. FINAL이 아니다.**
 - 근거: [개발 로드맵](DEVELOPMENT_ROADMAP.md), [회귀 기준](REGRESSION_BASELINE.md), [기존 실기기 확인표](MOBILE_ACCEPTANCE_v0.7.3.md), [현행 검사 기록](../TEST_REPORT.md).
 
 ## 안전 및 실행 전 확인
@@ -18,7 +18,7 @@
 | --- | --- | --- | --- |
 | A01 | GitHub `main` 전체 SHA와 Private 상태를 확인 | NOT RUN | |
 | A02 | 시험 ZIP/Sites 배포 파일을 main과 파일별 해시·변경 목록으로 대조; 허용된 빌드 산출물만 차이가 남음 | NOT RUN | |
-| A03 | 화면 앱 버전 및 **실제 배포 원본 커밋**을 대조; 추측한 SHA 또는 이전 SHA를 표시하지 않음. 현재 앱은 버전만 표시하므로 코드 보완 필요 | BLOCKED | |
+| A03 | 화면 앱 버전 및 **실제 배포 원본 커밋**을 대조. 소스 직접 실행은 커밋 미확인, 검증 ZIP에는 Git HEAD 스탬프. Sites 실제 파일 대조 필요 | BLOCKED | 검증 ZIP 통과, Sites 미검증 |
 | A04 | Sites 공개 접근 차단 및 승인된 사용자만 접근 가능한지 확인 | NOT RUN | |
 | A05 | 앱 변경 전후 가상 데이터 백업·복원 및 origin 차이를 확인 | NOT RUN | |
 
@@ -59,10 +59,10 @@ A4 출력은 가능한 프린터에서 최소 1회 실물로 검수하고 용지
 
 | 검사 | 명령 / 조건 | 이번 실행 결과 |
 | --- | --- | --- |
-| 앱 JavaScript 문법 | `npm run check` | NOT RUN |
-| Domain·parser·저장·백업·회귀 | `npm test` | NOT RUN |
-| 브라우저 UI 자동화 | `npm run test:browser` (선택적 Playwright 준비) | NOT RUN |
-| 릴리스 ZIP 무결성 | `python3 scripts/package-release.py` (대상 버전 문서 준비 후) | NOT RUN |
+| 앱 JavaScript 문법 | `npm run check` | PASS — CI run 38023281036 |
+| Domain·parser·저장·백업·회귀 | `npm test` | PASS — 71/71, CI run 38023281036 |
+| 브라우저 UI 자동화 | `npm run test:browser` (선택적 Playwright 준비) | PASS — 26/26 Linux Chromium, CI run 38023281036 |
+| 릴리스 ZIP 무결성 | `python3 scripts/package-release.py` (대상 버전 문서 준비 후) | PASS — Git SHA, SHA256, 66+ 파일, CI run 38023281036 |
 | 원격 소스 vs 배포 파일 | commit SHA·파일 목록·체크섬 비교 | NOT RUN |
 
 `TEST_REPORT.md`에 적힌 자동 68개·Chromium 26개 통과는 **v0.7.4 과거 검사 기록**이다. 이번 표의 통과 결과로 이월하지 않는다.
@@ -79,4 +79,4 @@ A4 출력은 가능한 프린터에서 최소 1회 실물로 검수하고 용지
 
 `v0.7.5 FINAL`은 위 대상 기기 인수검사, 원본·배포본 추적, 백업 복원 실기 검증, 영향받는 자동검사, 실물 A4 확인 및 미해결 중대 데이터 손실 결함 0건을 충족할 때만 검토한다.
 
-**지금은 v0.7.4 RC를 유지한다.** 버전/커밋 표시 구현은 배포 시점에 실제 SHA를 산출하는 최소 패치로 별도 수행한다. 단순히 기존 SHA를 코드에 고정하지 않는다. 실제 기기 검증 전 서버화·규칙 확대·전면 리팩터링·공개 배포를 진행하지 않는다.
+**현재는 v0.7.5 RC 후보이며 FINAL은 보류한다.** ZIP 내부에 실제 소스 SHA를 기록하는 패치를 구현·자동검증했지만 Sites 실제 배포본은 비교하지 않았다. 단순히 기존 SHA를 코드에 고정하지 않는다. 실제 기기 검증 전 서버화·규칙 확대·전면 리팩터링·공개 배포를 진행하지 않는다.

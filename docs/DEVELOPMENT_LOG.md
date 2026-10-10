@@ -1,3 +1,13 @@
+## 2026-10-10 — v0.7.5 배포 식별 패치 및 연동 적정성 검토
+
+기존 배치 계산, DB v4, 전체 백업 형식, 충돌 방어는 건드리지 않았다. 직접 실행 소스의 Git 식별은 미확인으로 표시하고, 깨끗한 Git 체크아웃에서 ZIP 빌드 시 Git SHA를 삽입·검증한다. 자동 회귀검사를 GitHub Actions로 연결했다.
+
+`9895d6e10c37445d68cd4f35d118924e4d041524`에서 Node 71개·Chromium 26개·ZIP 66개 무결성 검사를 CI로 통과했고, 후속 연동 검토 문서가 포함된 `9e5158a8a7e6ed8179f3e500b217416e9c06ff8d`도 CI 전체 단계를 통과했다. 실제 기기, A4 및 비공개 Sites 검증은 미완료.
+
+PRN `THREE-PROJECT-CONVERGENCE-v0.3.md`와 `roster-bridge.js`, 간호처방 `INTEGRATION_FEASIBILITY.md`를 대조해 `THREE_PROJECT_INTERFACE_FEASIBILITY.md`에 최소 일방향 읽기 전용 인터페이스 초안을 기록했다. **데이터 교환, DB 병합, 공통 ID, 인증, 환자정보 기능은 미구현.** 전면 리팩터링 보류 유지.
+
+---
+
 # MICU 화재대피 인원배치 개발 기록
 
 문서 버전: 1.1

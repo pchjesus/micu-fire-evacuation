@@ -86,3 +86,7 @@ python3 scripts/package-release.py
 
 검증 결과와 남은 항목은 `TEST_REPORT.md`, 사용자 변경 보고는 `RELEASE_REPORT_v0.7.4.md`, 실제 휴대폰 절차는 `docs/MOBILE_ACCEPTANCE_v0.7.3.md`를 참조합니다. 이전 검증 기록은 `docs/TEST_REPORT_v0.7.3.md`에 보존합니다. 실제 운영 Excel이나 브라우저 백업 JSON은 앱 ZIP에 넣지 않습니다.
 
+
+## 3프로젝트 장기 연동 검토
+
+`docs/THREE_PROJECT_INTERFACE_FEASIBILITY.md`에 PRN·간호처방과 근무정보를 읽기 전용으로 교환할 수 있는지 검토했다. 데이터 내보내기/API·원본 DB 변경·공통 사용자 ID·환자 모듈은 구현하지 않았다.
