@@ -1,5 +1,5 @@
 /* IndexedDB is authoritative. Legacy mirrors are imported once only. */
-const APP_VERSION = '0.7.4';
+const APP_VERSION = '0.7.5';
 const AppStorage = (() => {
   const DB_NAME = 'fireEvacuationRosterDB_v0617';
   const STORES = ['rosters', 'overrides', 'personnel', 'meta'];

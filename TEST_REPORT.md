@@ -1,3 +1,23 @@
+## v0.7.5 RC GitHub Actions 확인 (2026-10-10)
+
+- 소스 커밋 `9895d6e10c37445d68cd4f35d118924e4d041524` CI [38023221008](https://github.com/pchjesus/micu-fire-evacuation/actions/runs/38023221008): npm 문법 검사 통과, Node 71/71, Linux Chromium 26/26, ZIP 66개 파일 체크섬 및 Git SHA 스탬프 확인.
+- 소스 커밋 `9e5158a8a7e6ed8179f3e500b217416e9c06ff8d` CI [38023281036](https://github.com/pchjesus/micu-fire-evacuation/actions/runs/38023281036): 동일 워크플로 전체 단계 성공.
+- 이 결과는 실제 Android/iPhone/Windows Chrome 기기 조작이나 Sites 실행본 원본 일치를 입증하지 않는다. 해당 부분은 `docs/DEVICE_ACCEPTANCE_v0.7.5.md`에서 미검증으로 남는다.
+- v0.7.5 RC이며 FINAL 선언하지 않는다.
+
+---
+
+# v0.7.5 RC 후보 검증 상태 (2026-10-10)
+
+이번 변경 범위: 릴리스 ZIP Git SHA 식별(직접 소스는 미확인), Node 단위검사·CI 검증 경로, 장기 3프로젝트 인터페이스 설계 검토. 저장소/배치/백업 포맷 변경 없음.
+
+- **자동·브라우저 테스트의 v0.7.5 실행 결과는 반드시 해당 GitHub Actions run 및 커밋에서 별도 확인해야 한다.** 아래의 68개 자동·26개 Chromium 검사는 과거 v0.7.4 보고로서 v0.7.5 통과 근거가 아니다.
+- 실제 Android Chrome·iPhone Safari·Windows Chrome에서 파일 선택/다운로드/한글 조합/재실행/백업 복원/다중 탭 및 실물 A4: 미검증.
+- 비공개 Sites에 v0.7.5 배포하지 않았으며 실행 중인 파일·원본 SHA 비교는 미검증.
+- 검증 기준 및 기록표: `docs/DEVICE_ACCEPTANCE_v0.7.5.md`.
+
+---
+
 # v0.7.4 검증 보고서
 
 검사일: 2026-10-09. 판정: **RC — 코드·자동·통합·브라우저 검증 통과, 실제 기기와 운영 자료 미확인**.

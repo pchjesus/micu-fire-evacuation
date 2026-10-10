@@ -8,7 +8,7 @@ const empty=id=>({id,profiles:{},contexts:{}});
 function app(storage={}){
   const nodes={};
   const node=id=>nodes[id]||=( {value:'',textContent:'',hidden:false,classList:{contains:()=>true,add(){},remove(){},toggle(){}},focus(){}} );
-  const ctx=vm.createContext({Date,console,XLSX,Blob,structuredClone,APP_VERSION:'0.7.4',document:{getElementById:node},AppStorage:{initialize:async()=>{},emptyPersonnel:empty,...storage}});
+  const ctx=vm.createContext({Date,console,XLSX,Blob,structuredClone,APP_VERSION:'0.7.5',document:{getElementById:node},AppStorage:{initialize:async()=>{},emptyPersonnel:empty,...storage}});
   loadDomain(ctx);
   vm.runInContext(fs.readFileSync('script.js','utf8').split('/* UI bindings */')[0],ctx);
   vm.runInContext('render=()=>{}; showToast=()=>{}; renderRosterLibrary=async()=>{};',ctx);

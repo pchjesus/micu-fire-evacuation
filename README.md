@@ -1,4 +1,9 @@
-# MICU 화재대피 웹앱 v0.7.4 RC
+# MICU 화재대피 웹앱 v0.7.5 RC
+
+v0.7.5는 배포본 Git 커밋 식별과 자동 회귀검사 준비를 다룹니다. **DB v4, 백업 포맷 1, 근무표 해석·배치·수동 수정·저장 계약은 그대로입니다.** 아직 실기기 검증과 비공개 Sites 대조를 통과한 FINAL이 아닙니다. 기존 Sites 미리보기는 별개이고 승인 없이 재배포하지 않습니다.
+
+도움말의 Git 식별자는 배포용 ZIP이 깨끗한 Git 체크아웃에서 만들어질 때 ZIP 내부에만 기록됩니다. 직접 소스 실행은 ‘커밋 미확인’으로 표시됩니다. 패키지 제작: `python3 scripts/package-release.py` (Git checkout에서 실행하며 작업 트리가 깨끗해야 함). Git SHA 표시만으로 비공개 Sites 일치성을 인증하지 않습니다. 자세한 인수검사는 `docs/DEVICE_ACCEPTANCE_v0.7.5.md`를 참조하세요.
+
 
 v0.7.3의 기능·업무 흐름을 유지하면서 상태 전환 통합검증과 저장 충돌 방어를 보강한 로컬 검토본입니다. 근무표 교체·삭제 확인 중 다른 탭에서 저장한 내용을 보호하고, 다른 탭의 전체 복원 후 앱 새로고침으로 정상 저장을 재개합니다. RC는 검증본이라는 뜻이며 실제 휴대폰 검증이 남아 있어 FINAL로 표시하지 않습니다.
 
@@ -81,3 +86,7 @@ python3 scripts/package-release.py
 
 검증 결과와 남은 항목은 `TEST_REPORT.md`, 사용자 변경 보고는 `RELEASE_REPORT_v0.7.4.md`, 실제 휴대폰 절차는 `docs/MOBILE_ACCEPTANCE_v0.7.3.md`를 참조합니다. 이전 검증 기록은 `docs/TEST_REPORT_v0.7.3.md`에 보존합니다. 실제 운영 Excel이나 브라우저 백업 JSON은 앱 ZIP에 넣지 않습니다.
 
+
+## 3프로젝트 장기 연동 검토
+
+`docs/THREE_PROJECT_INTERFACE_FEASIBILITY.md`에 PRN·간호처방과 근무정보를 읽기 전용으로 교환할 수 있는지 검토했다. 데이터 내보내기/API·원본 DB 변경·공통 사용자 ID·환자 모듈은 구현하지 않았다.
