@@ -1,0 +1,30 @@
+name: MICU regression
+on:
+  push:
+    branches: [main, 'dev/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm test
+      - name: Install Chromium test dependency
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - run: python3 scripts/package-release.py
