@@ -21,16 +21,31 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
+          fetch-depth: 2
+      - name: B+ self-test and change scope
+        id: scope
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          bash scripts/ci-scope.sh --self-test
+          bash scripts/ci-scope.sh
       - uses: actions/setup-node@v4
+        if: steps.scope.outputs.tier != 'docs'
         with:
           node-version: '22'
           cache: npm
       - run: npm ci --ignore-scripts
+        if: steps.scope.outputs.tier != 'docs'
       - run: npm run check
+        if: steps.scope.outputs.tier != 'docs'
       - run: npm test
+        if: steps.scope.outputs.tier != 'docs'
       - name: Install Chromium test dependency
+        if: steps.scope.outputs.tier != 'docs'
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
           npx playwright install --with-deps chromium
       - run: npm run test:browser
+        if: steps.scope.outputs.tier != 'docs'
       - run: python3 scripts/package-release.py
+        if: steps.scope.outputs.tier == 'full'
