@@ -1,11 +1,17 @@
 name: MICU regression
 on:
   push:
-    branches: [main, 'dev/**']
+    branches: [main]
   pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
+# B+ CI: cancel superseded PR attempts only; retain protected main checks.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   regression:
     runs-on: ubuntu-24.04
