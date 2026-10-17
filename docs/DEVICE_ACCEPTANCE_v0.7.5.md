@@ -1,3 +1,13 @@
+## 2026-10-17 공개 Pages 기존 URL 긴급 복구 — 검사 상태 갱신
+
+- 기존 접속 URL: https://pchjesus.github.io/seoul-St.mary-micu-fire-evacuation/ (이미 공개 상태인 GitHub Pages; 이번 수정에서 공개 설정 변경 안 함).
+- 공식 코드 `main` `da864bffa1a7b118c57581e8d09420881b77c80c`의 정적 파일 18개를 배포용 미러 `main` `a592f25fdc4285a2094d5b87ad2be5550178cc36`와 해시 대조 **PASS**.
+- GitHub Pages build 및 실제 HTTP 경로의 `index.html`, `storage.js`, `build-info.js`에 대해 원본 커밋·DB v4·캐시 키 확인 **PASS** ([검증 실행](https://github.com/pchjesus/seoul-St.mary-micu-fire-evacuation/actions/runs/39003685976)).
+- **중요:** 아래 기존 A01/A04의 비공개 배포 정책·상태 기록은 이 공개 GitHub Pages 경로의 현재 상태를 설명하지 않는다. 신규 공개 전환은 이번 작업에서 하지 않았다. 별도의 비공개 Sites 검증은 이번 범위 밖이다.
+- B01~B15 **실제 기기 인수검사 결과는 여전히 NOT RUN**. 사용자가 기존 데이터를 가진 브라우저에서 새로고침→화면 복원→JSON 백업을 확인할 필요가 있으며, 사이트 데이터 삭제는 금지.
+
+---
+
 # v0.7.5 배포·실기기 인수검사 실행표 (준비본)
 
 - 기준: 2026-10-09, GitHub `main` `9930534cdbc4f6632d0aeeecac14ae22b85ad317` (v0.7.4 RC 및 공식 로드맵).

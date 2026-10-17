@@ -1,3 +1,13 @@
+## 2026-10-17 배포 핫픽스 추가 보고 — 공개 GitHub Pages 기존 URL 복구
+
+원인: 기존 공개 Pages에서 v0.7.2 DB v3 코드 실행, 사용자의 브라우저 DB는 v4. 정확한 `VersionError` 원인 확인. 최신 실행코드를 공식 `micu-fire-evacuation` `main`에서만 수정·검증하고, 기존 `seoul-St.mary-micu-fire-evacuation`는 버전 고정된 **정적 배포 미러**로 교체했음. 이전 v0.7.2 문서와 이력 보존.
+
+공식 소스 SHA: `da864bffa1a7b118c57581e8d09420881b77c80c`; Pages 미러 main SHA: `a592f25fdc4285a2094d5b87ad2be5550178cc36`. 실제 Pages build 성공, HTTP 본문에서 DB v4 코드와 소스 표시 대조 성공. Node 73개·Chromium 통합검사 PASS(원본 CI). DB 삭제/스키마 변경/환자 데이터 추가 없음. 기존 공개 사이트의 공개 범위를 변경하지 않음.
+
+아직 사용자 본인 브라우저의 동일 origin에 남아 있던 IndexedDB를 새 페이지로 읽는 실기기 인수검사는 미수행. 이 추가 기록은 아래의 2026-10-10 원래 보고보다 최신이며, **GitHub Pages 배포를 실시했다는 점만 갱신**한다. 프로젝트는 v0.7.5 RC이고 FINAL 아님.
+
+---
+
 # MICU v0.7.5 RC — 후보 출시 보고
 
 작성 2026-10-10. **RC 후보이며 FINAL 또는 실제 Sites 배포 완료가 아니다.**

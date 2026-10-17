@@ -1,3 +1,13 @@
+## BUG-0.7.5-PAGES-DB4-001 — 구형 공개 Pages와 DB v4 충돌 해결 (2026-10-17)
+
+- **재현 원인 확정:** 공개 `pchjesus/seoul-St.mary-micu-fire-evacuation` Pages 배포 원본이 v0.7.2이고 `indexedDB.open(DB_NAME, 3)`을 사용했다. 같은 주소의 사용 브라우저에는 v4 데이터가 있었으므로 `VersionError: requested version (3) is less than existing version (4)` 발생. 실제 오류 탭 및 두 GitHub 저장소 소스 대조.
+- **공식 소스 핫픽스:** GitHub `pchjesus/micu-fire-evacuation` 커밋 `da864bffa1a7b118c57581e8d09420881b77c80c` (`main`), PR #4. IndexedDB는 v4 유지. 모든 정적 자산 `?v=0.7.5-db4` 캐시키, 상위 DB 버전 거절 시 데이터 삭제 대신 한국어 업데이트 안내, 무삭제 회귀검사.
+- **자동검사:** [GitHub Actions 39003264706](https://github.com/pchjesus/micu-fire-evacuation/actions/runs/39003264706) Linux Node **73/73 통과, 실패 0·skipped 0**, Chromium 통합검사 통과, JS 문법 및 ZIP 검증 성공.
+- **배포 미러:** 공개 Pages 배포 전용 `pchjesus/seoul-St.mary-micu-fire-evacuation` 커밋 `a592f25fdc4285a2094d5b87ad2be5550178cc36` (PR #3), 공식 소스에서 정적 실행 파일 18개 복제. `build-info.js` 커밋 스탬프만 배포 전 치환. [배포 CI 39003685976](https://github.com/pchjesus/seoul-St.mary-micu-fire-evacuation/actions/runs/39003685976): 18개 원본 Git blob 검증 PASS, 공개 GitHub Pages HTTP의 HTML/DB4 storage.js/build-info.js 검사 PASS. [Pages build 39003685423](https://github.com/pchjesus/seoul-St.mary-micu-fire-evacuation/actions/runs/39003685423) success.
+- **계속 미검증:** 사용자의 이미 열려 있던 브라우저 탭에서 강력 새로고침 후 **기존 개인 IndexedDB 데이터가 그대로 표시되는지** 실기기 검증하지 않음. Android/iPhone/Windows 실기기·실물 A4 테스트도 수행하지 않았고, FINAL 조건 충족으로 간주하지 않음. 사용자 데이터 삭제·초기화·강제 다운그레이드 수행하지 않음.
+
+---
+
 ## v0.7.5 RC GitHub Actions 확인 (2026-10-10)
 
 - 소스 커밋 `9895d6e10c37445d68cd4f35d118924e4d041524` CI [38023221008](https://github.com/pchjesus/micu-fire-evacuation/actions/runs/38023221008): npm 문법 검사 통과, Node 71/71, Linux Chromium 26/26, ZIP 66개 파일 체크섬 및 Git SHA 스탬프 확인.

@@ -1,3 +1,11 @@
+## 2026-10-17 — 배포 미러 DB 버전 충돌 긴급 수정
+
+실행 중인 공개 Pages `seoul-St.mary-micu-fire-evacuation`가 v0.7.2 DB v3을 사용했지만 기존 브라우저 DB가 v4였기 때문에 VersionError 발생. 공식 코드 원본 `micu-fire-evacuation/main`은 이미 v0.7.5 DB v4를 사용하고 있음을 확인했다. 최우선은 데이터 보존 및 기존 origin 유지이며 DB 재생성·버전 내리기를 금지했다.
+
+핫픽스 PR #4에서 정적 자산 캐시키·미래 VersionError 한국어 안내·v4 보존 검사 추가. Node 73개와 Chromium 회귀 CI 성공. 별도 공개 Pages 배포용 저장소는 원본 `da864bffa1a7b118c57581e8d09420881b77c80c`의 런타임 파일 18개를 정확히 복제한 미러로 수정(PR #3); Git SHA 출처 명시와 Git blob·실제 HTTP 검증 성공. 메인 앱 계산/저장/이력 규칙 변경 없음. 브라우저 실제 저장 데이터 복원 확인 및 실기기 QA는 미완료.
+
+---
+
 ## 2026-10-10 — v0.7.5 배포 식별 패치 및 연동 적정성 검토
 
 기존 배치 계산, DB v4, 전체 백업 형식, 충돌 방어는 건드리지 않았다. 직접 실행 소스의 Git 식별은 미확인으로 표시하고, 깨끗한 Git 체크아웃에서 ZIP 빌드 시 Git SHA를 삽입·검증한다. 자동 회귀검사를 GitHub Actions로 연결했다.
