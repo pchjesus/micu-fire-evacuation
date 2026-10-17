@@ -149,3 +149,46 @@ test('existing primary data wins over an older legacy mirror',async()=>{
   await s.initialize();
   assert.equal((await s.readState('a')).assignments[key('a')],'최신');
 });
+
+test('the current app opens schema v4 without downgrading or resetting existing data',async()=>{
+  const {storage:s,indexedDB}=setup();
+  await s.initialize();
+  assert.equal((await s.openDB()).version,4);
+  await s.saveRoster(record('a'));
+  await s.setActiveId('a');
+  const next=setup({indexedDB}).storage;
+  await next.initialize();
+  assert.equal((await next.openDB()).version,4);
+  assert.equal(await next.getActiveId(),'a');
+  assert.equal((await next.getRoster('a')).all[0].name,'가상인원');
+});
+
+test('a newer database version rejects old app code without clearing its data',async()=>{
+  const indexedDB=new IDBFactory();
+  await new Promise((resolve,reject)=>{
+    const request=indexedDB.open('fireEvacuationRosterDB_v0617',5);
+    request.onupgradeneeded=()=>request.result.createObjectStore('meta',{keyPath:'id'});
+    request.onerror=()=>reject(request.error);
+    request.onsuccess=()=>{
+      const db=request.result,tx=db.transaction('meta','readwrite');
+      tx.objectStore('meta').put({id:'testData',value:'반드시 보존'});
+      tx.oncomplete=()=>{db.close();resolve();};
+      tx.onerror=()=>reject(tx.error);
+    };
+  });
+  const old=setup({indexedDB}).storage;
+  await assert.rejects(old.initialize(),/저장된 데이터.*새로운 버전/);
+  const future=await new Promise((resolve,reject)=>{
+    const req=indexedDB.open('fireEvacuationRosterDB_v0617',5);
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+  assert.equal(future.version,5);
+  const preserved=await new Promise((resolve,reject)=>{
+    const req=future.transaction('meta','readonly').objectStore('meta').get('testData');
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+  assert.equal(preserved.value,'반드시 보존');
+  future.close();
+});
