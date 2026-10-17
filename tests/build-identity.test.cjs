@@ -24,5 +24,5 @@ test('packaged source uses the complete valid SHA and visible short SHA',()=>{
 test('build identification loads before application state',()=>{
  const html=fs.readFileSync('index.html','utf8');
  assert.match(html,/id="buildCommit"/);
- assert.ok(html.indexOf('src="build-info.js"') < html.indexOf('src="storage.js"'));
+ assert.ok(html.indexOf('src="build-info.js"') < html.indexOf('src="storage.js?v=0.7.5-db4"'));
 });

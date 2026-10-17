@@ -29,7 +29,11 @@ const AppStorage = (() => {
           if (!request.result.objectStoreNames.contains(name)) request.result.createObjectStore(name, {keyPath:'id'});
         }
       };
-      request.onerror = () => fail(request.error);
+      request.onerror = () => {
+        if (request.error?.name === 'VersionError') {
+          fail(new Error('저장된 데이터가 현재 실행 중인 앱보다 새로운 버전이야. 최신 MICU 웹사이트에서 다시 열어줘. 기존 데이터를 보존하려면 사이트 데이터 삭제나 초기화를 하지 마.'));
+        } else fail(request.error);
+      };
       request.onblocked = () => fail(new Error('저장소 업데이트가 대기 중이야. 이 앱의 다른 탭을 닫고 다시 시도해줘.'));
       request.onsuccess = () => {
         if (settled) { request.result.close(); return; }
